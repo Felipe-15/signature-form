@@ -11,7 +11,7 @@ export default {
           200: "#bfe2fd",
         },
         attention: "#ed3548",
-        neutral: {
+        light: {
           500: "#9699ab",
           400: "#d6d9e6",
           300: "#f0f6ff",
