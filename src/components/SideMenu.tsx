@@ -9,7 +9,7 @@ const routes = [
 
 const SideMenu = () => {
   return (
-    <aside className="flex gap-2 justify-center pt-6 bg-mobile-aside h-[120px] sm:h-full bg-cover min-h-20 sm:w-[200px] sm:bg-desktop-aside sm:rounded-md">
+    <aside className="flex gap-2 justify-center pt-8 bg-mobile-aside h-[160px] sm:h-full bg-cover min-h-20 sm:w-[200px] sm:bg-desktop-aside sm:rounded-md">
       <ul className="flex sm:flex-col gap-3 sm:gap-6">
         {routes.map(([text, linkPath], index) => {
           return (
