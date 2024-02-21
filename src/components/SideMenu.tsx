@@ -24,7 +24,7 @@ const SideMenu = () => {
                   {index + 1}
                 </span>
                 <p className="hidden sm:flex flex-col font-bold">
-                  <span className="text-xs text-light-500">
+                  <span className="text-xs text-light-500 font-normal">
                     STEP {index + 1}
                   </span>
                   <span className="text-white text-sm">{text}</span>
