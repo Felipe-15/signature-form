@@ -25,6 +25,7 @@ function StepOne() {
       </label>
       <input
         id="email"
+        type="email"
         className="p-3 sm:py-2 px-3 font-medium border border-primary-500 rounded-md mb-3 sm:mb-6"
         placeholder="e.g. felipesouza@lorem.com"
       ></input>
@@ -33,6 +34,7 @@ function StepOne() {
       </label>
       <input
         id="phone"
+        type=""
         className="p-3 sm:py-2 px-3 font-medium border border-primary-500 rounded-md"
         placeholder="e.g. 88 9 9999-9999"
       ></input>
