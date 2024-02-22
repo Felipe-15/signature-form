@@ -16,15 +16,27 @@ import { Route as rootRoute } from './routes/__root'
 
 // Create Virtual Routes
 
+const SummaryLazyImport = createFileRoute('/summary')()
 const PlansLazyImport = createFileRoute('/plans')()
+const AddonsLazyImport = createFileRoute('/addons')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
+
+const SummaryLazyRoute = SummaryLazyImport.update({
+  path: '/summary',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/summary.lazy').then((d) => d.Route))
 
 const PlansLazyRoute = PlansLazyImport.update({
   path: '/plans',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/plans.lazy').then((d) => d.Route))
+
+const AddonsLazyRoute = AddonsLazyImport.update({
+  path: '/addons',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/addons.lazy').then((d) => d.Route))
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
@@ -39,8 +51,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/addons': {
+      preLoaderRoute: typeof AddonsLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/plans': {
       preLoaderRoute: typeof PlansLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/summary': {
+      preLoaderRoute: typeof SummaryLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -48,6 +68,11 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([IndexLazyRoute, PlansLazyRoute])
+export const routeTree = rootRoute.addChildren([
+  IndexLazyRoute,
+  AddonsLazyRoute,
+  PlansLazyRoute,
+  SummaryLazyRoute,
+])
 
 /* prettier-ignore-end */
