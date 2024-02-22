@@ -2,9 +2,15 @@ import { Link } from "@tanstack/react-router";
 
 interface FormCardBottomProps {
   previousURL?: string;
+  nextFunction: () => void;
+  disabled?: boolean;
 }
 
-const FormCardBottom = ({ previousURL }: FormCardBottomProps) => {
+const FormCardBottom = ({
+  previousURL,
+  disabled,
+  nextFunction,
+}: FormCardBottomProps) => {
   return (
     <footer className="mt-auto fixed sm:static bottom-0 left-0 right-0 bg-white px-2 py-4 flex justify-center sm:justify-end sm:p-0">
       <div
@@ -18,7 +24,11 @@ const FormCardBottom = ({ previousURL }: FormCardBottomProps) => {
             Go back
           </Link>
         )}
-        <button className="bg-primary-500 text-white font-bold py-2 px-6 rounded-md transition hover:bg-primary-400">
+        <button
+          onClick={nextFunction}
+          disabled={disabled}
+          className="bg-primary-500 text-white font-bold py-2 px-6 rounded-md transition hover:bg-primary-400 disabled:bg-light-500 disabled:cursor-not-allowed"
+        >
           Next Step
         </button>
       </div>
