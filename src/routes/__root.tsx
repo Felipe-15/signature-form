@@ -6,7 +6,7 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
   component: () => (
-    <main className="flex flex-col sm:flex-row mb-16 sm:p-4 bg-light-300 sm:bg-white shadow-md rounded-md w-full h-screen sm:max-h-[480px] max-w-[800px] m-auto overflow-hidden">
+    <main className="flex flex-col sm:flex-row mb-16 sm:p-4 bg-light-300 sm:bg-white shadow-md rounded-md w-full h-screen sm:max-h-[480px] max-w-[800px] sm:m-auto overflow-hidden">
       <MenuContextProvider>
         <SideMenu />
         <AnimatePresence mode="wait" initial={false}>
