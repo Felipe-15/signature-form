@@ -1,0 +1,26 @@
+@keyframes slideIn {
+  0% {
+    transform: translateY(100%);
+  }
+
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .fade-in {
+    animation:
+      fadeIn 1s ease-in-out,
+      slideIn 0.2s ease-in-out 1s;
+  }
+}

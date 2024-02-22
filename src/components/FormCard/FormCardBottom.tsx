@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import "./animation.css";
 
 interface FormCardBottomProps {
   previousURL?: string;
@@ -12,7 +13,7 @@ const FormCardBottom = ({
   nextFunction,
 }: FormCardBottomProps) => {
   return (
-    <footer className="mt-auto fixed sm:static bottom-0 left-0 right-0 bg-white px-2 py-4 flex justify-center sm:justify-end sm:p-0">
+    <footer className="mt-auto fade-in fixed sm:static bottom-0 left-0 right-0 bg-white px-2 py-4 flex justify-center sm:justify-end sm:p-0">
       <div
         className={`flex items-center sm:max-w-none max-w-[360px] w-full ${previousURL ? "justify-between" : "justify-end"}`}
       >
