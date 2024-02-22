@@ -123,7 +123,7 @@ function Addons() {
     } else if (!pathPermissions["/addons"]) {
       navigate({ to: "/" });
     }
-  }, []);
+  }, [navigate, pathPermissions]);
 
   return (
     <FormCard.Root>

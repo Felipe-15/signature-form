@@ -1,4 +1,4 @@
-import { Link, createLazyFileRoute } from "@tanstack/react-router";
+import { Link, createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { FormCard } from "../components/FormCard";
 import { plans, addons } from "../db/data";
 import { Plan } from "../interfaces/Plan";
@@ -9,7 +9,12 @@ export const Route = createLazyFileRoute("/summary")({
 });
 
 function Summary() {
+  const navigate = useNavigate();
   const type = localStorage.getItem("type") as "monthly";
+  if (!type) {
+    navigate({ from: "/summary", to: "/" });
+    return <></>;
+  }
 
   const plan = plans.info.find(
     (plan) => plan.id === Number(localStorage.getItem("selectedPlan") || 1)

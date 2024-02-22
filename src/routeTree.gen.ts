@@ -18,6 +18,7 @@ import { Route as rootRoute } from './routes/__root'
 
 const SummaryLazyImport = createFileRoute('/summary')()
 const PlansLazyImport = createFileRoute('/plans')()
+const CongratulationsLazyImport = createFileRoute('/congratulations')()
 const AddonsLazyImport = createFileRoute('/addons')()
 const IndexLazyImport = createFileRoute('/')()
 
@@ -32,6 +33,13 @@ const PlansLazyRoute = PlansLazyImport.update({
   path: '/plans',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/plans.lazy').then((d) => d.Route))
+
+const CongratulationsLazyRoute = CongratulationsLazyImport.update({
+  path: '/congratulations',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/congratulations.lazy').then((d) => d.Route),
+)
 
 const AddonsLazyRoute = AddonsLazyImport.update({
   path: '/addons',
@@ -55,6 +63,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AddonsLazyImport
       parentRoute: typeof rootRoute
     }
+    '/congratulations': {
+      preLoaderRoute: typeof CongratulationsLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/plans': {
       preLoaderRoute: typeof PlansLazyImport
       parentRoute: typeof rootRoute
@@ -71,6 +83,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   AddonsLazyRoute,
+  CongratulationsLazyRoute,
   PlansLazyRoute,
   SummaryLazyRoute,
 ])

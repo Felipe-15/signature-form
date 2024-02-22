@@ -65,7 +65,7 @@ function SecondStep() {
     } else if (!pathPermissions["/plans"]) {
       navigate({ to: "/" });
     }
-  }, []);
+  }, [navigate, pathPermissions]);
 
   const handleNextStep = () => {
     if (!selectedPlan) {
