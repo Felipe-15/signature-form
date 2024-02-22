@@ -1,44 +1,136 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { FormCard } from "../components/FormCard";
+import InputMask from "react-input-mask";
+import { useForm, Controller } from "react-hook-form";
+import { InputHTMLAttributes, useContext } from "react";
+import { MenuContext } from "../contexts/MenuContext";
 
 export const Route = createLazyFileRoute("/")({
   component: StepOne,
 });
 
+type Fields = {
+  name: string;
+  email: string;
+  phone: string;
+};
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  register: object;
+  error?: string;
+  label: string;
+}
+
+const Input = ({ register, error, label, ...rest }: InputProps) => {
+  return (
+    <>
+      <div className="flex justify-between items-center w-full">
+        <label htmlFor={rest.id} className="text-sm text-primary-500 sm:mb-1">
+          {label}
+        </label>
+        <small className="text-attention">{error}</small>
+      </div>
+      <input
+        data-error={!!error}
+        className="p-3 sm:py-2 px-3 outline-transparent focus:border-primary-500  border border-light-400 transition rounded-md mb-3 sm:mb-6 data-[error=true]:border-attention"
+        {...rest}
+        {...register}
+      ></input>
+    </>
+  );
+};
+
 function StepOne() {
+  const navigate = useNavigate();
+
+  const { setPathPermissions } = useContext(MenuContext);
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const {
+    handleSubmit,
+    formState: { errors, isValid },
+    clearErrors,
+    control,
+    register,
+  } = useForm<Fields>({
+    values: {
+      email: userData.email || "",
+      phone: userData.phone || "",
+      name: userData.name || "",
+    },
+  });
+  const handleNextStep = (data: Fields) => {
+    localStorage.setItem("user", JSON.stringify({ ...data }));
+    setPathPermissions((prev) => ({ ...prev, "/plans": true }));
+    navigate({
+      from: "/",
+      to: "/plans",
+      startTransition: true,
+    });
+  };
   return (
     <FormCard.Root>
       <FormCard.Title>Personal info</FormCard.Title>
       <FormCard.Subtitle>
         Please provide your name, email address, and phone number.
       </FormCard.Subtitle>
-      <label htmlFor="name" className="text-sm text-primary-500 sm:mb-1">
-        Name
-      </label>
-      <input
-        id="name"
-        className="p-3 sm:py-2 px-3 font-medium border border-primary-500 rounded-md mb-3 sm:mb-6"
+      <Input
         placeholder="e.g. Felipe Souza"
-      ></input>
-      <label htmlFor="email" className="text-sm text-primary-500 sm:mb-1">
-        Email Address
-      </label>
-      <input
-        id="email"
-        type="email"
-        className="p-3 sm:py-2 px-3 font-medium border border-primary-500 rounded-md mb-3 sm:mb-6"
+        register={{
+          ...register("name", {
+            required: { value: true, message: "This field is required!" },
+          }),
+        }}
+        label="Name"
+        id="name"
+        error={errors.name?.message}
+      />
+      <Input
         placeholder="e.g. felipesouza@lorem.com"
-      ></input>
-      <label htmlFor="phone" className="text-sm text-primary-500 sm:mb-1">
-        Phone Number
-      </label>
-      <input
-        id="phone"
-        type=""
-        className="p-3 sm:py-2 px-3 font-medium border border-primary-500 rounded-md"
-        placeholder="e.g. 88 9 9999-9999"
-      ></input>
-      <FormCard.Bottom />
+        register={{
+          ...register("email", {
+            required: { value: true, message: "This field is required!" },
+          }),
+        }}
+        label="Email Address"
+        id="email"
+        error={errors.name?.message}
+      />
+      <div className="flex justify-between items-center w-full">
+        <label htmlFor="phone" className="text-sm text-primary-500 sm:mb-1">
+          Phone Number
+        </label>
+        <small className="text-attention">{errors.phone?.message}</small>
+      </div>
+
+      <Controller
+        name="phone"
+        control={control}
+        rules={{
+          minLength: { value: 11, message: "Invalid phone format!" },
+          required: { value: true, message: "This field is required!" },
+        }}
+        render={({ field: { value, ref, onChange } }) => {
+          return (
+            <InputMask
+              id="phone"
+              data-error={!!errors.phone?.message}
+              mask={"(99) 9 9999-9999"}
+              onChange={onChange}
+              value={value}
+              className="p-3 sm:py-2 px-3 outline-transparent focus:border-primary-500  border border-light-400 rounded-md transition data-[error=true]:border-attention"
+              placeholder="e.g. (88) 9 9999-9999"
+              ref={ref}
+            />
+          );
+        }}
+      />
+      <FormCard.Bottom
+        disabled={!isValid}
+        nextFunction={handleSubmit(handleNextStep, () =>
+          setTimeout(clearErrors, 3000)
+        )}
+      />
     </FormCard.Root>
   );
 }
