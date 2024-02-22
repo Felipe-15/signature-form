@@ -3,49 +3,11 @@ import { FormCard } from "../components/FormCard";
 import { plans } from "../db/data";
 import { useContext, useEffect, useState } from "react";
 import { MenuContext } from "../contexts/MenuContext";
+import PlanCard from "../components/PlanCard";
 
 export const Route = createLazyFileRoute("/plans")({
   component: SecondStep,
 });
-
-interface CardPlanProps {
-  title: string;
-  price: number;
-  type: "monthly" | "yearly";
-  imageURL: string;
-  timeFree?: number;
-  isSelected: boolean;
-  onSelect: () => void;
-}
-
-const CardPlan = ({
-  title,
-  price,
-  type,
-  imageURL,
-  timeFree,
-  isSelected,
-  onSelect,
-}: CardPlanProps) => {
-  return (
-    <button
-      onClick={onSelect}
-      data-selected={isSelected}
-      className="flex sm:flex-col sm:flex-1 sm:gap-6 sm:p-4 p-3 gap-3 w-full border border-light-400 rounded-md text-left transition hover:shadow-sm data-[selected=true]:bg-light-300 data-[selected=true]:border-primary-400 hover:border-primary-400"
-    >
-      <img src={imageURL} alt="Arcade plan image" />
-      <p className="flex flex-col">
-        <span className="text-primary-500 font-bold">{title}</span>
-        <span className="text-light-400">
-          ${price}/{type === "monthly" ? "mo" : "yr"}
-        </span>
-        {!!timeFree && (
-          <span className="text-sm text-light-500">{timeFree} months free</span>
-        )}
-      </p>
-    </button>
-  );
-};
 
 function SecondStep() {
   const navigate = useNavigate();
@@ -62,7 +24,7 @@ function SecondStep() {
       console.log("Entrou");
       setPlanType(recoveredPlanType as "monthly" | "yearly");
       setSelectedPlan(Number(recoveredSelectedPlan));
-    } else if (!pathPermissions["/plans"]) {
+    } else if (!pathPermissions["/plans"] && !localStorage.getItem("user")) {
       navigate({ to: "/" });
     }
   }, [navigate, pathPermissions]);
@@ -94,7 +56,7 @@ function SecondStep() {
         <ul className="grid grid-cols-1 gap-2 w-full mb-6 sm:grid-cols-3">
           {plans["info"].map((plan) => (
             <li key={plan.id.toString()}>
-              <CardPlan
+              <PlanCard
                 {...plan}
                 price={plans.prices[planType][plan.id as 1]}
                 isSelected={selectedPlan === plan.id}
@@ -114,7 +76,7 @@ function SecondStep() {
           </span>
           <label className="inline-block relative h-6 w-12 cursor-pointer">
             <input
-              defaultChecked={planType === "yearly"}
+              defaultChecked={localStorage.getItem("type") === "yearly"}
               onChange={() => {
                 setSelectedPlan(undefined);
                 setPlanType((prev) =>
