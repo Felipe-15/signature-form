@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { addons } from "../db/data";
 import { MenuContext } from "../contexts/MenuContext";
 import AddonCard from "../components/AddonCard";
+import { Addon } from "../interfaces/Addon";
 
 export const Route = createLazyFileRoute("/addons")({
   component: Addons,
@@ -16,16 +17,18 @@ function Addons() {
   const type =
     (localStorage.getItem("type") as "monthly" | "yearly" | null) || "monthly";
 
-  const [addonsSelected, setAddonsSelected] = useState<number[]>([]);
+  const [addonsSelected, setAddonsSelected] = useState<Addon[]>([]);
 
-  const handleSelect = (id: number) => {
-    const filtered = addonsSelected.filter((addonId) => addonId !== id);
+  const handleSelect = (selectedAddon: Addon) => {
+    const filtered = addonsSelected.filter(
+      (addon) => addon.id !== selectedAddon.id
+    );
 
     if (filtered.length !== addonsSelected.length) {
       setAddonsSelected(filtered);
       return;
     }
-    setAddonsSelected((prev) => [...prev, id]);
+    setAddonsSelected((prev) => [...prev, selectedAddon]);
   };
 
   const handleNextStep = () => {
@@ -54,16 +57,18 @@ function Addons() {
         Add-ons help enhance your gaming experience.
       </FormCard.Subtitle>
       <ul className="flex flex-col gap-3">
-        {addons.info.map((addon) => {
+        {addons.map((addon) => {
           return (
             <li key={addon.id.toString()}>
               <AddonCard
                 {...addon}
-                price={addons.prices[type][addon.id as 1]}
-                onSelect={() => handleSelect(addon.id)}
+                price={
+                  addon[type === "monthly" ? "monthlyPrice" : "yearlyPrice"]
+                }
+                onSelect={() => handleSelect(addon)}
                 type={type || "monthly"}
                 selected={
-                  !!addonsSelected.find((addonId) => addon.id === addonId)
+                  !!addonsSelected.find((selected) => addon.id === selected.id)
                 }
               />
             </li>

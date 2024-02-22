@@ -4,6 +4,7 @@ import { plans } from "../db/data";
 import { useContext, useEffect, useState } from "react";
 import { MenuContext } from "../contexts/MenuContext";
 import PlanCard from "../components/PlanCard";
+import { Plan } from "../interfaces/Plan";
 
 export const Route = createLazyFileRoute("/plans")({
   component: SecondStep,
@@ -14,16 +15,17 @@ function SecondStep() {
   const { pathPermissions, setPathPermissions } = useContext(MenuContext);
 
   const [planType, setPlanType] = useState<"monthly" | "yearly">("monthly");
-  const [selectedPlan, setSelectedPlan] = useState<number | undefined>();
+  const [selectedPlan, setSelectedPlan] = useState<Plan | undefined>();
 
   useEffect(() => {
     const recoveredPlanType = localStorage.getItem("type");
-    const recoveredSelectedPlan = localStorage.getItem("selectedPlan");
+    const recoveredSelectedPlan = JSON.parse(
+      localStorage.getItem("selectedPlan") || "{}"
+    );
 
-    if (recoveredPlanType && recoveredSelectedPlan) {
-      console.log("Entrou");
+    if (recoveredPlanType && Object.keys(recoveredSelectedPlan).length) {
       setPlanType(recoveredPlanType as "monthly" | "yearly");
-      setSelectedPlan(Number(recoveredSelectedPlan));
+      setSelectedPlan(recoveredSelectedPlan);
     } else if (!pathPermissions["/plans"] && !localStorage.getItem("user")) {
       navigate({ to: "/" });
     }
@@ -36,7 +38,7 @@ function SecondStep() {
     }
 
     localStorage.setItem("type", planType);
-    localStorage.setItem("selectedPlan", selectedPlan.toString());
+    localStorage.setItem("selectedPlan", JSON.stringify(selectedPlan));
 
     setPathPermissions((prev) => ({ ...prev, "/addons": true }));
 
@@ -54,15 +56,17 @@ function SecondStep() {
       </FormCard.Subtitle>
       <section>
         <ul className="grid grid-cols-1 gap-2 w-full mb-6 sm:grid-cols-3">
-          {plans["info"].map((plan) => (
+          {plans.map((plan) => (
             <li key={plan.id.toString()}>
               <PlanCard
                 {...plan}
-                price={plans.prices[planType][plan.id as 1]}
-                isSelected={selectedPlan === plan.id}
+                price={
+                  plan[planType === "monthly" ? "monthlyPrice" : "yearlyPrice"]
+                }
+                isSelected={selectedPlan?.id === plan.id}
                 type={planType}
                 timeFree={planType === "yearly" ? 2 : undefined}
-                onSelect={() => setSelectedPlan(plan.id)}
+                onSelect={() => setSelectedPlan(plan)}
               />
             </li>
           ))}
@@ -86,7 +90,7 @@ function SecondStep() {
               type="checkbox"
               className="peer hidden"
             />
-            <span className="absolute left-0 right-0 top-0 bottom-0 rounded-full  peer-checked:bg-primary-500 bg-light-400 before:absolute before:left-1 before:rounded-full transition-all before:transition-all peer-checked:before:translate-x-[22px] before:h-4 before:w-4 before:translate-y-[4px] before:border-light-400 peer-checked:before:border-primary-500 before:bg-primary-500 peer-checked:before:bg-light-300 border hover:border-primary-300"></span>
+            <span className="absolute flex px-1 items-center left-0 right-0 top-0 bottom-0 rounded-full  peer-checked:bg-primary-500 bg-light-400 before:absolute before:rounded-full transition-all before:transition-all peer-checked:before:translate-x-[22px] before:h-4 before:w-4  before:border-light-400 peer-checked:before:border-primary-500 before:bg-primary-500 peer-checked:before:bg-light-300 border hover:border-primary-300"></span>
           </label>
           <span
             data-checked={planType === "yearly"}

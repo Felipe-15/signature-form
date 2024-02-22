@@ -1,6 +1,5 @@
 import { Link, createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { FormCard } from "../components/FormCard";
-import { plans, addons } from "../db/data";
 import { Plan } from "../interfaces/Plan";
 import { Addon } from "../interfaces/Addon";
 
@@ -10,35 +9,24 @@ export const Route = createLazyFileRoute("/summary")({
 
 function Summary() {
   const navigate = useNavigate();
+
   const type = localStorage.getItem("type") as "monthly";
-  if (!type) {
+  const plan: Plan = JSON.parse(localStorage.getItem("selectedPlan") || "{}");
+
+  if (!type || !Object.keys(plan).length) {
     navigate({ from: "/summary", to: "/" });
     return <></>;
   }
 
-  const plan = plans.info.find(
-    (plan) => plan.id === Number(localStorage.getItem("selectedPlan") || 1)
-  ) as Plan & { price?: number };
-  plan.price = plans.prices[type][plan.id as 1];
+  const priceType = type === "monthly" ? "monthlyPrice" : "yearlyPrice";
 
-  let totalPrice = plan.price;
-
-  const selectedAddonsIds = JSON.parse(
+  const selectedAddons = JSON.parse(
     localStorage.getItem("addons") || "[]"
-  ) as number[];
-  const selectedAddons: (Addon & { price: number })[] = [];
+  ) as Addon[];
 
-  for (const addon of addons.info) {
-    if (selectedAddonsIds.includes(addon.id)) {
-      const addonPrice = addons.prices[type][addon.id as 1];
-      selectedAddons.push({
-        ...addon,
-        price: addonPrice,
-      });
-
-      totalPrice += addonPrice;
-    }
-  }
+  const totalPrice =
+    plan[priceType] +
+    selectedAddons.reduce((sum, addon) => sum + addon[priceType], 0);
 
   return (
     <FormCard.Root>
@@ -61,7 +49,7 @@ function Summary() {
               </Link>
             </p>
             <span className="font-bold text-primary-500">
-              ${plan.price}/{type === "monthly" ? "mo" : "yr"}
+              ${plan[priceType]}/{type === "monthly" ? "mo" : "yr"}
             </span>
           </div>
           {!!selectedAddons && (
@@ -70,7 +58,7 @@ function Summary() {
                 <li className="flex w-full justify-between">
                   <span className="text-light-400 text-sm">{addon.title}</span>
                   <span className="text-light-500t text-sm">
-                    +${addon.price}/{type === "monthly" ? "mo" : "yr"}
+                    +${addon[priceType]}/{type === "monthly" ? "mo" : "yr"}
                   </span>
                 </li>
               ))}
