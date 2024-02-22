@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { Dispatch, SetStateAction, createContext, useState } from "react";
 import { paths } from "../paths";
 
 const routePaths: { [key: string]: boolean } = {};
@@ -10,9 +10,7 @@ export const MenuContext = createContext({
   pathPermissions: routePaths,
 } as {
   pathPermissions: { [key: string]: boolean };
-  setPathPermissions:
-    | ((data: { [key: string]: boolean }) => void)
-    | ((set: (prev: { [key: string]: boolean }) => object) => object);
+  setPathPermissions: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
 });
 
 const MenuContextProvider = ({ children }: { children: React.ReactNode }) => {
