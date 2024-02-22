@@ -1,7 +1,8 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { FormCard } from "../components/FormCard";
 import { plans } from "../db/data";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { MenuContext } from "../contexts/MenuContext";
 
 export const Route = createLazyFileRoute("/plans")({
   component: SecondStep,
@@ -47,8 +48,42 @@ const CardPlan = ({
 };
 
 function SecondStep() {
+  const navigate = useNavigate();
+  const { pathPermissions, setPathPermissions } = useContext(MenuContext);
+
   const [planType, setPlanType] = useState<"monthly" | "yearly">("monthly");
   const [selectedPlan, setSelectedPlan] = useState<number | undefined>();
+
+  useEffect(() => {
+    const recoveredPlanType = localStorage.getItem("type");
+    const recoveredSelectedPlan = localStorage.getItem("selectedPlan");
+
+    if (recoveredPlanType && recoveredSelectedPlan) {
+      console.log("Entrou");
+      setPlanType(recoveredPlanType as "monthly" | "yearly");
+      setSelectedPlan(Number(recoveredSelectedPlan));
+    } else if (!pathPermissions["/plans"]) {
+      navigate({ to: "/" });
+    }
+  }, []);
+
+  const handleNextStep = () => {
+    if (!selectedPlan) {
+      alert("Please select a plan");
+      return;
+    }
+
+    localStorage.setItem("type", planType);
+    localStorage.setItem("selectedPlan", selectedPlan.toString());
+
+    setPathPermissions((prev) => ({ ...prev, "/addons": true }));
+
+    navigate({
+      from: "/plans",
+      to: "/addons",
+    });
+  };
+
   return (
     <FormCard.Root>
       <FormCard.Title>Select your plan</FormCard.Title>
@@ -57,10 +92,11 @@ function SecondStep() {
       </FormCard.Subtitle>
       <section>
         <ul className="grid grid-cols-1 gap-2 w-full mb-6 sm:grid-cols-3">
-          {plans[planType].map((plan) => (
+          {plans["info"].map((plan) => (
             <li key={plan.id.toString()}>
               <CardPlan
                 {...plan}
+                price={plans.prices[planType][plan.id as 1]}
                 isSelected={selectedPlan === plan.id}
                 type={planType}
                 timeFree={planType === "yearly" ? 2 : undefined}
@@ -78,6 +114,7 @@ function SecondStep() {
           </span>
           <label className="inline-block relative h-6 w-12 cursor-pointer">
             <input
+              defaultChecked={planType === "yearly"}
               onChange={() => {
                 setSelectedPlan(undefined);
                 setPlanType((prev) =>
@@ -97,7 +134,11 @@ function SecondStep() {
           </span>
         </div>
       </section>
-      <FormCard.Bottom previousURL="/" />
+      <FormCard.Bottom
+        previousURL="/"
+        nextFunction={handleNextStep}
+        disabled={!selectedPlan}
+      />
     </FormCard.Root>
   );
 }
