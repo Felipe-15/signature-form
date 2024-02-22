@@ -55,7 +55,10 @@ function Summary() {
           {!!selectedAddons && (
             <ul className="flex flex-col w-full gap-4">
               {selectedAddons.map((addon) => (
-                <li className="flex w-full justify-between">
+                <li
+                  key={addon.id.toString()}
+                  className="flex w-full justify-between"
+                >
                   <span className="text-light-400 text-sm">{addon.title}</span>
                   <span className="text-light-500t text-sm">
                     +${addon[priceType]}/{type === "monthly" ? "mo" : "yr"}

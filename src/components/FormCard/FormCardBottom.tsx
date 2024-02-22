@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import "./animation.css";
 
 interface FormCardBottomProps {
@@ -12,8 +13,16 @@ const FormCardBottom = ({
   disabled,
   nextFunction,
 }: FormCardBottomProps) => {
+  const isMobile = window.innerWidth <= 640;
+  const variants = isMobile ? { y: 300 } : {};
   return (
-    <footer className="mt-auto fade-in fixed sm:static bottom-0 left-0 right-0 bg-white px-2 py-4 flex justify-center sm:justify-end sm:p-0">
+    <motion.footer
+      initial={variants}
+      animate={{ y: 0 }}
+      transition={{ type: "spring", duration: 0.5, delay: 0.8 }}
+      exit={variants}
+      className="mt-auto fixed sm:static bottom-0 left-0 right-0 bg-white px-2 py-4 flex justify-center sm:justify-end sm:p-0"
+    >
       <div
         className={`flex items-center sm:max-w-none max-w-[360px] w-full ${previousURL ? "justify-between" : "justify-end"}`}
       >
@@ -33,7 +42,7 @@ const FormCardBottom = ({
           Next Step
         </button>
       </div>
-    </footer>
+    </motion.footer>
   );
 };
 
