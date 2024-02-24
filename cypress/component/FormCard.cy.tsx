@@ -6,7 +6,9 @@ describe("<FormCard />", () => {
       <FormCard.Root>
         <FormCard.Title>Title test</FormCard.Title>
         <FormCard.Subtitle>Subtitle test</FormCard.Subtitle>
-        <FormCard.Bottom nextFunction={() => null} />
+        <FormCard.Bottom>
+          <></>
+        </FormCard.Bottom>
       </FormCard.Root>
     );
     cy.get("section").should("be.visible");
@@ -15,13 +17,15 @@ describe("<FormCard />", () => {
     cy.get("footer").should("be.visible");
     cy.get("button").should("be.visible");
   });
-  it("should call the nextFunction when click on button", () => {
+  it("should render the link when previousURL is given", () => {
     cy.mount(
       <FormCard.Root>
-        <FormCard.Bottom nextFunction={cy.spy().as("onNext")} />
+        <FormCard.Bottom previousURL="/">
+          <></>
+        </FormCard.Bottom>
       </FormCard.Root>
     );
-    cy.get("button").click();
+    cy.get("a").should("contain", "Back");
     cy.get("@onNext").should("have.been.called");
   });
 });
