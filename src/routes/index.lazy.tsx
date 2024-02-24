@@ -5,6 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useContext } from "react";
 import { MenuContext } from "../contexts/MenuContext";
 import Input from "../components/Input";
+import Button from "../components/Button";
 
 export const Route = createLazyFileRoute("/")({
   component: StepOne,
@@ -101,12 +102,16 @@ function StepOne() {
           );
         }}
       />
-      <FormCard.Bottom
-        disabled={!isValid}
-        nextFunction={handleSubmit(handleNextStep, () =>
-          setTimeout(clearErrors, 3000)
-        )}
-      />
+      <FormCard.Bottom>
+        <Button
+          onClick={handleSubmit(handleNextStep, () =>
+            setTimeout(clearErrors, 3000)
+          )}
+          disabled={!isValid}
+        >
+          Next Step
+        </Button>
+      </FormCard.Bottom>
     </FormCard.Root>
   );
 }

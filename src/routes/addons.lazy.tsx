@@ -5,6 +5,7 @@ import { addons } from "../db/data";
 import { MenuContext } from "../contexts/MenuContext";
 import AddonCard from "../components/AddonCard";
 import { Addon } from "../interfaces/Addon";
+import Button from "../components/Button";
 
 export const Route = createLazyFileRoute("/addons")({
   component: Addons,
@@ -75,7 +76,9 @@ function Addons() {
           );
         })}
       </ul>
-      <FormCard.Bottom nextFunction={handleNextStep} previousURL="/plans" />
+      <FormCard.Bottom previousURL="/plans">
+        <Button onClick={handleNextStep}>Next Step</Button>
+      </FormCard.Bottom>
     </FormCard.Root>
   );
 }

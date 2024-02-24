@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { MenuContext } from "../contexts/MenuContext";
 import PlanCard from "../components/PlanCard";
 import { Plan } from "../interfaces/Plan";
+import Button from "../components/Button";
 
 export const Route = createLazyFileRoute("/plans")({
   component: SecondStep,
@@ -100,11 +101,11 @@ function SecondStep() {
           </span>
         </div>
       </section>
-      <FormCard.Bottom
-        previousURL="/"
-        nextFunction={handleNextStep}
-        disabled={!selectedPlan}
-      />
+      <FormCard.Bottom previousURL="/">
+        <Button onClick={handleNextStep} disabled={!selectedPlan}>
+          Next Step
+        </Button>
+      </FormCard.Bottom>
     </FormCard.Root>
   );
 }
