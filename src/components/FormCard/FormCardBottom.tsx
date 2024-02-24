@@ -4,15 +4,10 @@ import "./animation.css";
 
 interface FormCardBottomProps {
   previousURL?: string;
-  nextFunction: () => void;
-  disabled?: boolean;
+  children: React.ReactNode;
 }
 
-const FormCardBottom = ({
-  previousURL,
-  disabled,
-  nextFunction,
-}: FormCardBottomProps) => {
+const FormCardBottom = ({ previousURL, children }: FormCardBottomProps) => {
   const isMobile = window.innerWidth <= 640;
   const variants = isMobile ? { y: 300 } : {};
   return (
@@ -34,13 +29,7 @@ const FormCardBottom = ({
             Go back
           </Link>
         )}
-        <button
-          onClick={nextFunction}
-          disabled={disabled}
-          className="bg-primary-500 text-white font-bold py-2 px-6 rounded-md transition hover:bg-primary-400 disabled:bg-light-500 disabled:cursor-not-allowed"
-        >
-          Next Step
-        </button>
+        {children}
       </div>
     </motion.footer>
   );
