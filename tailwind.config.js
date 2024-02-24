@@ -19,8 +19,8 @@ export default {
         },
       },
       backgroundImage: {
-        "mobile-aside": "url(./public/images/bg-sidebar-mobile.svg)",
-        "desktop-aside": "url(./public/images/bg-sidebar-desktop.svg)",
+        "mobile-aside": "url(images/bg-sidebar-mobile.svg)",
+        "desktop-aside": "url(images/bg-sidebar-desktop.svg)",
       },
     },
   },
