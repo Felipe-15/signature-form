@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { paths } from "../paths";
 import { useContext, useEffect } from "react";
 import { MenuContext } from "../contexts/MenuContext";
@@ -24,7 +25,10 @@ const SideMenu = () => {
         {paths.map(([text, linkPath], index) => {
           const isAllowed = pathPermissions[linkPath];
           return (
-            <li
+            <motion.li
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", delay: 0.2 * (index + 1) }}
               key={index.toString()}
               data-disabled={!isAllowed}
               className="data-[disabled=true]:cursor-not-allowed"
@@ -47,7 +51,7 @@ const SideMenu = () => {
                   <span className="text-white text-sm">{text}</span>
                 </p>
               </Link>{" "}
-            </li>
+            </motion.li>
           );
         })}
       </ul>
