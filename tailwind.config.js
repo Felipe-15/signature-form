@@ -18,6 +18,10 @@ export default {
           200: "#fafbff",
         },
       },
+      backgroundImage: {
+        "sidebar-mobile": "url(../images/bg-sidebar-mobile.svg)",
+        "sidebar-desktop": "url(../images/bg-sidebar-desktop.svg)",
+      },
     },
   },
   plugins: [],
