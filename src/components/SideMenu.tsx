@@ -21,7 +21,7 @@ const SideMenu = () => {
 
   return (
     <aside
-      className={`flex gap-2 justify-center pt-8 h-[160px] sm:h-full bg-[url('images/bg-sidebar-mobile.svg')] sm:bg-[url('images/bg-sidebar-desktop.svg')] bg-cover min-h-20 sm:w-[200px]  sm:rounded-md`}
+      className={`flex gap-2 justify-center pt-8 h-[160px] sm:h-full bg-[url('../images/bg-sidebar-mobile.svg')] sm:bg-[url('../images/bg-sidebar-desktop.svg')] bg-cover min-h-20 sm:w-[200px]  sm:rounded-md`}
     >
       <ul className="flex sm:flex-col gap-3 sm:gap-6">
         {paths.map(([text, linkPath], index) => {
